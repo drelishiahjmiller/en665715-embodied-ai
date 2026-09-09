@@ -1,0 +1,12 @@
+services:
+  ros2:
+    build: .
+    container_name: rosa-ros2
+    network_mode: host
+    volumes:
+      - .:/workspace
+    environment:
+      - ROS_DOMAIN_ID=0
+    stdin_open: true
+    tty: true
+    command: bash
