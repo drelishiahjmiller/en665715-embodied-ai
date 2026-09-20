@@ -11,7 +11,10 @@ RUN pip3 install --no-cache-dir \
     ollama \
     jpl-rosa \
     'langchain-ollama<1.0' \
-    'langchain-core>=0.3.52,<1.0'
+    'langchain-core>=0.3.52,<1.0' \
+    'mcp>=1.9.2,<2.0' \
+    'langchain-mcp-adapters==0.1.10' \
+    requests
 
 # Source ROS 2 automatically in every shell
 RUN echo "source /opt/ros/humble/setup.bash" >> /etc/bash.bashrc
