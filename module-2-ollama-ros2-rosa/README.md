@@ -1,4 +1,4 @@
-# Ollama + ROSA + ROS 2 Setup
+# Module 2: Ollama + ROSA + ROS 2 Setup
 
 ## Architecture Overview
 
@@ -41,7 +41,7 @@ pip install ollama jpl-rosa 'langchain-ollama<1.0' 'langchain-core>=0.3.52,<1.0'
 
 Test Ollama connection:
 ```bash
-python test_ollama.py
+python module-2-ollama-ros2-rosa/test_ollama.py
 ```
 
 Verify all imports:
@@ -60,6 +60,7 @@ which python               # verify — should show .../ollama/venv/bin/python
 ## 2. Docker Setup (ROS 2 + ROSA)
 
 ROSA requires ROS 2 (`rclpy`) to function. The Docker container provides ROS 2 Humble with all Python dependencies pre-installed.
+Run all Docker Compose commands from the repository root, where `docker-compose.yml` now lives.
 
 ### First time: Build the image
 
@@ -83,7 +84,7 @@ The container runs in the background. You only need to do this once (or after a 
 ### Run ROSA
 
 ```bash
-docker compose exec ros2 bash -c "source /opt/ros/humble/setup.bash && python3 /workspace/rosa_hello.py"
+docker compose exec ros2 bash -c "source /opt/ros/humble/setup.bash && python3 /workspace/module-2-ollama-ros2-rosa/rosa_hello.py"
 ```
 
 You can run this as many times as you want while the container is running.
@@ -97,7 +98,7 @@ docker compose exec ros2 bash
 Once inside:
 ```bash
 source /opt/ros/humble/setup.bash
-python3 /workspace/rosa_hello.py
+python3 /workspace/module-2-ollama-ros2-rosa/rosa_hello.py
 ```
 
 ### Demo without hardware (mock ROS 2 topics)
@@ -136,13 +137,13 @@ docker compose up -d --build
 |---|---|---|
 | `test_ollama.py` | Mac (venv) | Test Ollama connection without ROS 2 |
 | `rosa_hello.py` | Docker | ROSA agent — natural language → ROS 2 commands |
-| `Dockerfile` | — | Defines the ROS 2 container image |
-| `docker-compose.yml` | — | Container configuration (networking, volumes) |
+| `rosa_agent.py` | Docker | ROSA agent with local robot tools |
+| `robot_tools.py` | Docker | Simulated robot tools used by ROSA agents |
 
 ## Notes
 
 - Inside Docker, Ollama is accessed via `host.docker.internal:11434` (already configured in `rosa_hello.py`)
-- The `docker-compose.yml` mounts this folder into the container at `/workspace`, so you can edit files on your Mac and run them in Docker
+- The root `docker-compose.yml` mounts the whole repository at `/workspace`, so every module is available in Docker
 - `network_mode: host` ensures the container can reach Ollama and (future) Pico 2 W over WiFi
 - The container uses Python 3.10 (Ubuntu 22.04); the local venv uses Python 3.12
 
