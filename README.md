@@ -11,7 +11,7 @@ This course introduces the principles of large language models, agentic reasonin
 | Module | Topic | Description |
 |--------|-------|-------------|
 | [Module 2](module-2-ollama-ros2-rosa/) | Ollama Models & ROS 2 & ROSA Tool Setup | Set up Ollama LLMs, ROS 2 (Docker), and ROSA for natural language robot control |
-| [Module 3](module-3-agent-architecture-mcp/) | Agent Architecture & MCP | Extend the ROSA agent with external MCP datasheet and weather tools |
+| [Module 4](module-4-agent-architecture-mcp/) | Agent Architecture, MCP & Pico 2 W | Extend ROSA with MCP tools and control a Pico 2 W over micro-ROS |
 
 ## Getting Started
 
