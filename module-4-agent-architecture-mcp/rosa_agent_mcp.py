@@ -1,7 +1,7 @@
-"""Module 3 example: combine local ROSA tools with tools from MCP servers.
+"""Module 4 example: combine local ROSA tools with tools from MCP servers.
 
 Run inside the ROS 2 Docker container from the repository root:
-    docker compose exec ros2 bash -c "source /opt/ros/humble/setup.bash && python3 /workspace/module-3-agent-architecture-mcp/rosa_agent_mcp.py"
+    docker compose exec ros2 bash -c "source /opt/ros/humble/setup.bash && python3 /workspace/module-4-agent-architecture-mcp/rosa_agent_mcp.py"
 """
 import asyncio
 import sys
