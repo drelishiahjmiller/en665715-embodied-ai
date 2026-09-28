@@ -14,6 +14,8 @@ RUN pip3 install --no-cache-dir \
     'langchain-core>=0.3.52,<1.0' \
     'mcp>=1.9.2,<2.0' \
     'langchain-mcp-adapters==0.1.10' \
+    'chromadb==0.6.3' \
+    'posthog>=2.4,<4.0' \
     requests
 
 # Source ROS 2 automatically in every shell

@@ -1,0 +1,20 @@
+{
+  "name": "Pico 2 W micro-ROS Builder",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "workspaceMount": "source=${localWorkspaceFolder}/..,target=/workspace,type=bind",
+  "workspaceFolder": "/workspace/micro-ros-builder",
+  "remoteUser": "root",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.cmake-tools",
+        "ms-vscode.cpptools",
+        "ms-iot.vscode-ros",
+        "timonwong.shellcheck"
+      ]
+    }
+  }
+}
