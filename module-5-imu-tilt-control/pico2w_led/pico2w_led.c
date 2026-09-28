@@ -18,8 +18,6 @@
 #include "tilt_control.h"
 #include "wifi_config.h"
 
-#define FORWARD_TILT_SIGN 1.0f
-
 static rcl_publisher_t led_state_publisher;
 static rcl_publisher_t pitch_publisher;
 static rcl_publisher_t tilt_status_publisher;
@@ -121,7 +119,7 @@ int main(void) {
             sleep_ms(1000);
         }
     }
-    tilt_control_init(neutral_pitch, FORWARD_TILT_SIGN);
+    tilt_control_init(neutral_pitch);
     printf("Neutral pitch: %.2f degrees\n", neutral_pitch);
 
     static picow_udp_transport_context_t transport_context = {

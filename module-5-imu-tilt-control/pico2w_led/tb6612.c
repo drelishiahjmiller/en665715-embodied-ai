@@ -14,7 +14,7 @@
 #define MOTOR_STBY_PIN 5
 
 #define MOTOR_PWM_TOP 999
-#define MOTOR_PWM_START 250
+#define MOTOR_PWM_START 999
 
 void tb6612_init(void) {
     const uint pins[] = {
@@ -50,8 +50,10 @@ void tb6612_stop(void) {
 
 void tb6612_drive(bool forward) {
     tb6612_stop();
-    gpio_put(MOTOR_AIN1_PIN, forward);
-    gpio_put(MOTOR_AIN2_PIN, !forward);
+    // The motors are mirror-mounted, so the left motor (A) is reversed to make
+    // both wheels roll the same way when wired M+ to AO1/BO1 and M- to AO2/BO2.
+    gpio_put(MOTOR_AIN1_PIN, !forward);
+    gpio_put(MOTOR_AIN2_PIN, forward);
     gpio_put(MOTOR_BIN1_PIN, forward);
     gpio_put(MOTOR_BIN2_PIN, !forward);
     gpio_put(MOTOR_STBY_PIN, true);

@@ -2,7 +2,6 @@
 
 import asyncio
 import json
-import sys
 from pathlib import Path
 
 from langchain_core.messages import HumanMessage, SystemMessage
@@ -10,12 +9,9 @@ from langchain_ollama import ChatOllama
 from langchain_mcp_adapters.client import MultiServerMCPClient
 from rosa import ROSA, RobotSystemPrompts
 
-MODULE_DIR = Path(__file__).resolve().parent
-MODULE_2_DIR = MODULE_DIR.parent / "module-2-ollama-ros2-rosa"
-sys.path.insert(0, str(MODULE_2_DIR))
-
-from memory_manager import ConversationMemory  # noqa: E402
-from robot_tools import (  # noqa: E402
+# memory_manager.py and robot_tools.py are in this same folder.
+from memory_manager import ConversationMemory
+from robot_tools import (
     emergency_stop,
     get_robot_status,
     move_forward,
@@ -23,6 +19,8 @@ from robot_tools import (  # noqa: E402
     read_tof_distance,
     rotate,
 )
+
+MODULE_DIR = Path(__file__).resolve().parent
 
 LOCAL_TOOLS = [read_imu, move_forward, read_tof_distance, rotate, emergency_stop, get_robot_status]
 MCP_SERVERS = {

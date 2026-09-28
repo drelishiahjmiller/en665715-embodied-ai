@@ -1,21 +1,17 @@
 """Module 4 example: combine local ROSA tools with tools from MCP servers.
 
-Run inside the ROS 2 Docker container from the repository root:
+Run inside the ROS 2 Docker container from your project folder:
     docker compose exec ros2 bash -c "source /opt/ros/humble/setup.bash && python3 /workspace/module-4-agent-architecture-mcp/rosa_agent_mcp.py"
 """
 import asyncio
-import sys
 from pathlib import Path
 
 from langchain_ollama import ChatOllama
 from langchain_mcp_adapters.client import MultiServerMCPClient
 from rosa import ROSA, RobotSystemPrompts
 
-MODULE_DIR = Path(__file__).resolve().parent
-MODULE_2_DIR = MODULE_DIR.parent / "module-2-ollama-ros2-rosa"
-sys.path.insert(0, str(MODULE_2_DIR))
-
-from robot_tools import (  # noqa: E402
+# robot_tools.py is in this same folder.
+from robot_tools import (
     read_imu,
     move_forward,
     read_tof_distance,
@@ -23,6 +19,8 @@ from robot_tools import (  # noqa: E402
     emergency_stop,
     get_robot_status,
 )
+
+MODULE_DIR = Path(__file__).resolve().parent
 
 LOCAL_TOOLS = [read_imu, move_forward, read_tof_distance, rotate, emergency_stop, get_robot_status]
 

@@ -21,7 +21,7 @@ enum {
     TILT_STATUS_BUSY = 8,
 };
 
-void tilt_control_init(float neutral_pitch, float forward_tilt_sign);
+void tilt_control_init(float initial_pitch);
 int32_t tilt_control_arm(int32_t direction);
 int32_t tilt_control_update(bool pitch_valid, float pitch_degrees);
 void tilt_control_stop(void);
