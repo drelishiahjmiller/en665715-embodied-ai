@@ -1,0 +1,18 @@
+services:
+  gazebo:
+    build: ./docker
+    container_name: gazebo-sim
+    ports:
+      # Browser desktop. 127.0.0.1 keeps it private to your computer.
+      - "127.0.0.1:6080:6080"
+    extra_hosts:
+      # Lets ROSA reach Ollama running on your computer (macOS and Windows)
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - .:/workspace
+    environment:
+      - DISPLAY=:1
+      - ROS_DOMAIN_ID=0
+      - LIBGL_ALWAYS_SOFTWARE=1
+      - QT_X11_NO_MITSHM=1
+    shm_size: "1gb"

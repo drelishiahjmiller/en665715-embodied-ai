@@ -1,0 +1,4 @@
+build
+libmicroros
+wifi_config.h
+!.vscode/*
