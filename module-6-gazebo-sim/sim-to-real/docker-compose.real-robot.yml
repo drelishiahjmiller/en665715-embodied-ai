@@ -1,0 +1,25 @@
+# Add-on for the sim-to-real discussion: connects your real robot to the
+# Gazebo container. Use it together with the main docker-compose.yml.
+# From the module-6-gazebo-sim folder:
+#   docker compose -f docker-compose.yml -f sim-to-real/docker-compose.real-robot.yml up -d
+services:
+  gazebo:
+    # Lets the micro-ROS Agent container share this container's memory
+    ipc: shareable
+    ports:
+      # The Pico sends micro-ROS traffic to your computer on UDP port 8888
+      - "8888:8888/udp"
+
+  micro-ros-agent:
+    image: microros/micro-ros-agent:humble
+    container_name: micro-ros-agent
+    # Share the Gazebo container's network and memory so the Pico's topics
+    # appear in the same ROS 2 graph as the simulator and ROSA
+    network_mode: "service:gazebo"
+    ipc: "service:gazebo"
+    environment:
+      - ROS_DOMAIN_ID=0
+    command: ["udp4", "--port", "8888", "-v4"]
+    depends_on:
+      - gazebo
+    restart: unless-stopped
