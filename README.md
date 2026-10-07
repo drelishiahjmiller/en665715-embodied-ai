@@ -13,6 +13,7 @@ This course introduces the principles of large language models, agentic reasonin
 | [Module 2](module-2-ollama-ros2-rosa/) | Ollama Models & ROS 2 & ROSA Tool Setup | Set up Ollama LLMs, ROS 2 (Docker), and ROSA for natural language robot control |
 | [Module 4](module-4-agent-architecture-mcp/) | Agent Architecture, MCP & Pico 2 W | Extend ROSA with MCP tools and control a Pico 2 W over micro-ROS |
 | [Module 5](module-5-imu-tilt-control/) | IMU Tilt & Wheel Control | Use ROSA to arm Pico 2 W wheel movement and trigger it with a BNO055 tilt gesture |
+| [Module 6](module-6-gazebo-sim/) | Gazebo Simulation & Sim-to-Real Control | Drive a sensor-equipped robot with ROSA in Gazebo and compare commands between the simulation and Pico 2 W car |
 
 ## Getting Started
 
