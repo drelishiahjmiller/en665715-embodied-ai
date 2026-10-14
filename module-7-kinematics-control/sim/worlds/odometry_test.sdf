@@ -1,0 +1,102 @@
+<?xml version="1.0" ?>
+<!--
+  Odometry test arena: an empty floor with "tape" marks, like the marks you
+  put on a real floor. The robot starts at the origin facing +x.
+    green line : 1 m straight test, from (0, 0) to (1, 0)
+    orange     : corners of a 1 m square at (0,0), (1,0), (1,1), (0,1)
+  The marks are flat visuals only, so the robot drives over them.
+-->
+<sdf version="1.8">
+  <world name="odometry_test">
+
+    <physics name="2ms" type="ignored">
+      <max_step_size>0.002</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+
+    <plugin filename="ignition-gazebo-physics-system" name="ignition::gazebo::systems::Physics"/>
+    <plugin filename="ignition-gazebo-user-commands-system" name="ignition::gazebo::systems::UserCommands"/>
+    <plugin filename="ignition-gazebo-scene-broadcaster-system" name="ignition::gazebo::systems::SceneBroadcaster"/>
+
+    <scene>
+      <ambient>0.6 0.6 0.6 1</ambient>
+      <background>0.75 0.85 0.95 1</background>
+    </scene>
+
+    <light type="directional" name="sun">
+      <cast_shadows>false</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>0.9 0.9 0.9 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry><plane><normal>0 0 1</normal><size>10 10</size></plane></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><plane><normal>0 0 1</normal><size>10 10</size></plane></geometry>
+          <material><ambient>0.85 0.85 0.85 1</ambient><diffuse>0.85 0.85 0.85 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- 1 m straight line -->
+    <model name="tape_line_1m">
+      <static>true</static>
+      <pose>0.5 0 0.0005 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>1.0 0.02 0.001</size></box></geometry>
+          <material><ambient>0.1 0.6 0.2 1</ambient><diffuse>0.1 0.6 0.2 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Start mark (cross at the origin) -->
+    <model name="tape_start">
+      <static>true</static>
+      <pose>0 0 0.001 0 0 0</pose>
+      <link name="link">
+        <visual name="x_bar">
+          <geometry><box><size>0.12 0.02 0.001</size></box></geometry>
+          <material><ambient>0.1 0.1 0.1 1</ambient><diffuse>0.1 0.1 0.1 1</diffuse></material>
+        </visual>
+        <visual name="y_bar">
+          <geometry><box><size>0.02 0.12 0.001</size></box></geometry>
+          <material><ambient>0.1 0.1 0.1 1</ambient><diffuse>0.1 0.1 0.1 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- 1 m square corners -->
+    <model name="tape_corner_1_0">
+      <static>true</static>
+      <pose>1 0 0.001 0 0 0</pose>
+      <link name="link"><visual name="visual">
+        <geometry><box><size>0.08 0.08 0.001</size></box></geometry>
+        <material><ambient>0.9 0.5 0.1 1</ambient><diffuse>0.9 0.5 0.1 1</diffuse></material>
+      </visual></link>
+    </model>
+    <model name="tape_corner_1_1">
+      <static>true</static>
+      <pose>1 1 0.001 0 0 0</pose>
+      <link name="link"><visual name="visual">
+        <geometry><box><size>0.08 0.08 0.001</size></box></geometry>
+        <material><ambient>0.9 0.5 0.1 1</ambient><diffuse>0.9 0.5 0.1 1</diffuse></material>
+      </visual></link>
+    </model>
+    <model name="tape_corner_0_1">
+      <static>true</static>
+      <pose>0 1 0.001 0 0 0</pose>
+      <link name="link"><visual name="visual">
+        <geometry><box><size>0.08 0.08 0.001</size></box></geometry>
+        <material><ambient>0.9 0.5 0.1 1</ambient><diffuse>0.9 0.5 0.1 1</diffuse></material>
+      </visual></link>
+    </model>
+
+  </world>
+</sdf>
