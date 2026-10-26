@@ -1,0 +1,131 @@
+<?xml version="1.0" ?>
+<!--
+  Vision arena for the camera vision lab: a 4 m x 4 m room with objects for the camera.
+  The robot starts at the origin facing +x.
+    red ball        (1.4, 1.1)    about 1.8 m away, 38 degrees to the left:
+                                  just outside the camera view at the start
+    blue box        (1.7, -0.6)   visible at the start, on the right
+    green cylinder  (-0.8, -1.2)  behind the robot
+    brown box       (0.6, 0.0)    straight ahead: blocks the path
+-->
+<sdf version="1.8">
+  <world name="vision_arena">
+
+    <physics name="2ms" type="ignored">
+      <max_step_size>0.002</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+
+    <plugin filename="ignition-gazebo-physics-system" name="ignition::gazebo::systems::Physics"/>
+    <plugin filename="ignition-gazebo-user-commands-system" name="ignition::gazebo::systems::UserCommands"/>
+    <plugin filename="ignition-gazebo-scene-broadcaster-system" name="ignition::gazebo::systems::SceneBroadcaster"/>
+    <plugin filename="ignition-gazebo-imu-system" name="ignition::gazebo::systems::Imu"/>
+    <!-- Renders the robot's camera (the odometry test world does not need it) -->
+    <plugin filename="ignition-gazebo-sensors-system" name="ignition::gazebo::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+
+    <scene>
+      <ambient>0.6 0.6 0.6 1</ambient>
+      <background>0.75 0.85 0.95 1</background>
+    </scene>
+
+    <light type="directional" name="sun">
+      <cast_shadows>false</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>0.9 0.9 0.9 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry><plane><normal>0 0 1</normal><size>10 10</size></plane></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><plane><normal>0 0 1</normal><size>10 10</size></plane></geometry>
+          <material><ambient>0.72 0.62 0.5 1</ambient><diffuse>0.72 0.62 0.5 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Walls: x from -1.5 to 2.5 m, y from -2 to 2 m, 40 cm high -->
+    <model name="wall_front">
+      <static>true</static>
+      <pose>2.5 0 0.2 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>0.05 4.05 0.4</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>0.05 4.05 0.4</size></box></geometry>
+          <material><ambient>0.92 0.92 0.88 1</ambient><diffuse>0.92 0.92 0.88 1</diffuse></material></visual>
+      </link>
+    </model>
+    <model name="wall_back">
+      <static>true</static>
+      <pose>-1.5 0 0.2 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>0.05 4.05 0.4</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>0.05 4.05 0.4</size></box></geometry>
+          <material><ambient>0.92 0.92 0.88 1</ambient><diffuse>0.92 0.92 0.88 1</diffuse></material></visual>
+      </link>
+    </model>
+    <model name="wall_left">
+      <static>true</static>
+      <pose>0.5 2.0 0.2 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>4.05 0.05 0.4</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>4.05 0.05 0.4</size></box></geometry>
+          <material><ambient>0.92 0.92 0.88 1</ambient><diffuse>0.92 0.92 0.88 1</diffuse></material></visual>
+      </link>
+    </model>
+    <model name="wall_right">
+      <static>true</static>
+      <pose>0.5 -2.0 0.2 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>4.05 0.05 0.4</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>4.05 0.05 0.4</size></box></geometry>
+          <material><ambient>0.92 0.92 0.88 1</ambient><diffuse>0.92 0.92 0.88 1</diffuse></material></visual>
+      </link>
+    </model>
+
+    <!-- Objects for the camera -->
+    <model name="red_ball">
+      <static>true</static>
+      <pose>1.4 1.1 0.07 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><sphere><radius>0.07</radius></sphere></geometry></collision>
+        <visual name="visual"><geometry><sphere><radius>0.07</radius></sphere></geometry>
+          <material><ambient>0.85 0.08 0.08 1</ambient><diffuse>0.85 0.08 0.08 1</diffuse></material></visual>
+      </link>
+    </model>
+    <model name="blue_box">
+      <static>true</static>
+      <pose>1.7 -0.6 0.075 0 0 0.3</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>0.15 0.15 0.15</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>0.15 0.15 0.15</size></box></geometry>
+          <material><ambient>0.1 0.25 0.85 1</ambient><diffuse>0.1 0.25 0.85 1</diffuse></material></visual>
+      </link>
+    </model>
+    <model name="green_cylinder">
+      <static>true</static>
+      <pose>-0.8 -1.2 0.1 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><cylinder><radius>0.06</radius><length>0.2</length></cylinder></geometry></collision>
+        <visual name="visual"><geometry><cylinder><radius>0.06</radius><length>0.2</length></cylinder></geometry>
+          <material><ambient>0.1 0.65 0.2 1</ambient><diffuse>0.1 0.65 0.2 1</diffuse></material></visual>
+      </link>
+    </model>
+    <model name="brown_box">
+      <static>true</static>
+      <pose>0.6 0 0.075 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>0.12 0.3 0.15</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>0.12 0.3 0.15</size></box></geometry>
+          <material><ambient>0.45 0.3 0.15 1</ambient><diffuse>0.45 0.3 0.15 1</diffuse></material></visual>
+      </link>
+    </model>
+
+  </world>
+</sdf>
