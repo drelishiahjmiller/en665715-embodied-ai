@@ -15,6 +15,7 @@ This course introduces the principles of large language models, agentic reasonin
 | [Module 5](module-5-imu-tilt-control/) | IMU Tilt & Wheel Control | Use ROSA to arm Pico 2 W wheel movement and trigger it with a BNO055 tilt gesture |
 | [Module 6](module-6-gazebo-sim/) | Gazebo Simulation & Sim-to-Real Control | Drive a sensor-equipped robot with ROSA in Gazebo and compare commands between the simulation and Pico 2 W car |
 | [Module 7](module-7-kinematics-control/) | Kinematics, Odometry & PID Control | Estimate robot pose from wheel encoders, navigate with odometry feedback, and tune closed-loop wheel-speed control |
+| [Module 8](module-8-sensor-fusion/) | Multi-Sensor Fusion & State Estimation | Fuse wheel odometry and BNO055 IMU data with an EKF, and use an ESP32-CAM vision agent to find and approach objects |
 
 ## Getting Started
 
