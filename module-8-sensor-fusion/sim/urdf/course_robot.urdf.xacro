@@ -1,0 +1,212 @@
+<?xml version="1.0"?>
+<!--
+  Course robot for Modules 7 and 8: two-wheel differential drive with the real
+  wheel size (2.5 in) and wheel separation (5 in, center to center).
+  The wheels are driven by ros2_control's diff_drive_controller, and their
+  joint angles play the role of the wheel encoders. Module 8 adds the IMU
+  (sensor fusion lab) and the ESP32-CAM (camera vision lab).
+-->
+<robot name="course_robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- ===== Dimensions (meters, kilograms) ===== -->
+  <xacro:property name="wheel_radius" value="0.03175"/>      <!-- 2.5 in diameter -->
+  <xacro:property name="wheel_width" value="0.0254"/>        <!-- 1 in -->
+  <xacro:property name="wheel_separation" value="0.127"/>    <!-- 5 in, center to center -->
+  <xacro:property name="wheel_mass" value="0.05"/>
+  <xacro:property name="chassis_length" value="0.20"/>
+  <xacro:property name="chassis_width" value="0.10"/>
+  <xacro:property name="chassis_height" value="0.05"/>
+  <xacro:property name="chassis_mass" value="0.60"/>
+  <xacro:property name="chassis_x" value="-0.03"/>
+  <xacro:property name="chassis_z" value="0.02"/>
+  <xacro:property name="caster_radius" value="0.0159"/>
+  <xacro:property name="caster_x" value="-0.10"/>
+
+  <xacro:macro name="box_inertia" params="m x y z">
+    <inertia ixx="${m*(y*y+z*z)/12}" ixy="0" ixz="0"
+             iyy="${m*(x*x+z*z)/12}" iyz="0" izz="${m*(x*x+y*y)/12}"/>
+  </xacro:macro>
+  <xacro:macro name="cylinder_inertia" params="m r h">
+    <inertia ixx="${m*(3*r*r+h*h)/12}" ixy="0" ixz="0"
+             iyy="${m*(3*r*r+h*h)/12}" iyz="0" izz="${m*r*r/2}"/>
+  </xacro:macro>
+
+  <!-- ===== Chassis: base_link is the midpoint between the wheel axles ===== -->
+  <link name="base_link">
+    <visual>
+      <origin xyz="${chassis_x} 0 ${chassis_z}"/>
+      <geometry><box size="${chassis_length} ${chassis_width} ${chassis_height}"/></geometry>
+      <material name="chassis_blue"><color rgba="0.1 0.3 0.8 1"/></material>
+    </visual>
+    <collision>
+      <origin xyz="${chassis_x} 0 ${chassis_z}"/>
+      <geometry><box size="${chassis_length} ${chassis_width} ${chassis_height}"/></geometry>
+    </collision>
+    <inertial>
+      <origin xyz="${chassis_x} 0 ${chassis_z}"/>
+      <mass value="${chassis_mass}"/>
+      <xacro:box_inertia m="${chassis_mass}" x="${chassis_length}" y="${chassis_width}" z="${chassis_height}"/>
+    </inertial>
+  </link>
+
+  <!-- ===== Drive wheels ===== -->
+  <xacro:macro name="drive_wheel" params="side y_sign">
+    <link name="${side}_wheel_link">
+      <visual>
+        <geometry><cylinder radius="${wheel_radius}" length="${wheel_width}"/></geometry>
+        <material name="tire_black"><color rgba="0.05 0.05 0.05 1"/></material>
+      </visual>
+      <!-- A sphere touches the ground at one point, like a real tire -->
+      <collision>
+        <geometry><sphere radius="${wheel_radius}"/></geometry>
+      </collision>
+      <inertial>
+        <mass value="${wheel_mass}"/>
+        <xacro:cylinder_inertia m="${wheel_mass}" r="${wheel_radius}" h="${wheel_width}"/>
+      </inertial>
+    </link>
+    <joint name="${side}_wheel_joint" type="continuous">
+      <parent link="base_link"/>
+      <child link="${side}_wheel_link"/>
+      <origin xyz="0 ${y_sign*wheel_separation/2} 0" rpy="${-pi/2} 0 0"/>
+      <axis xyz="0 0 1"/>
+    </joint>
+    <gazebo reference="${side}_wheel_link">
+      <mu1>1.0</mu1>
+      <mu2>1.0</mu2>
+    </gazebo>
+  </xacro:macro>
+  <xacro:drive_wheel side="left" y_sign="1"/>
+  <xacro:drive_wheel side="right" y_sign="-1"/>
+
+  <!-- ===== Ball caster (no friction) ===== -->
+  <link name="caster_link">
+    <visual>
+      <geometry><sphere radius="${caster_radius}"/></geometry>
+      <material name="caster_gray"><color rgba="0.6 0.6 0.6 1"/></material>
+    </visual>
+    <collision>
+      <geometry><sphere radius="${caster_radius}"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
+    </inertial>
+  </link>
+  <joint name="caster_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="caster_link"/>
+    <origin xyz="${caster_x} 0 ${caster_radius - wheel_radius}"/>
+  </joint>
+  <gazebo reference="caster_link">
+    <mu1>0.0</mu1>
+    <mu2>0.0</mu2>
+  </gazebo>
+
+  <!-- ===== NEW in Module 8: BNO055 IMU =====
+       Mounted at the center of the robot, 4 cm up, chip facing up. The noise
+       and the small constant gyro bias make its heading drift slowly, like a
+       real BNO055 in IMU mode. -->
+  <link name="imu_link">
+    <visual>
+      <geometry><box size="0.027 0.020 0.004"/></geometry>
+      <material name="imu_purple"><color rgba="0.5 0.1 0.6 1"/></material>
+    </visual>
+    <inertial>
+      <mass value="0.003"/>
+      <inertia ixx="1e-7" ixy="0" ixz="0" iyy="1e-7" iyz="0" izz="1e-7"/>
+    </inertial>
+  </link>
+  <joint name="imu_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="imu_link"/>
+    <origin xyz="0 0 0.04"/>
+  </joint>
+  <gazebo reference="imu_link">
+    <sensor name="bno055" type="imu">
+      <always_on>true</always_on>
+      <update_rate>50</update_rate>
+      <topic>sim/imu</topic>
+      <imu>
+        <angular_velocity>
+          <x><noise type="gaussian"><mean>0</mean><stddev>0.003</stddev></noise></x>
+          <y><noise type="gaussian"><mean>0</mean><stddev>0.003</stddev></noise></y>
+          <z><noise type="gaussian"><mean>0</mean><stddev>0.003</stddev>
+            <bias_mean>0.0005</bias_mean></noise></z>
+        </angular_velocity>
+        <linear_acceleration>
+          <x><noise type="gaussian"><mean>0</mean><stddev>0.05</stddev></noise></x>
+          <y><noise type="gaussian"><mean>0</mean><stddev>0.05</stddev></noise></y>
+          <z><noise type="gaussian"><mean>0</mean><stddev>0.05</stddev></noise></z>
+        </linear_acceleration>
+      </imu>
+    </sensor>
+  </gazebo>
+
+  <!-- ===== Camera vision lab: ESP32-CAM =====
+       At the front of the robot, 7 cm up, tilted 11 degrees down so it sees the
+       floor ahead. 640 x 480 with a 66 degree field of view, like the OV3660 lens. -->
+  <link name="camera_link">
+    <visual>
+      <geometry><box size="0.012 0.027 0.040"/></geometry>
+      <material name="camera_black"><color rgba="0.1 0.1 0.1 1"/></material>
+    </visual>
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
+    </inertial>
+  </link>
+  <joint name="camera_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="camera_link"/>
+    <origin xyz="0.06 0 0.07" rpy="0 0.2 0"/>
+  </joint>
+  <gazebo reference="camera_link">
+    <sensor name="esp32cam" type="camera">
+      <always_on>true</always_on>
+      <!-- 5 photos per second keeps software rendering light -->
+      <update_rate>5</update_rate>
+      <topic>sim/camera</topic>
+      <camera>
+        <horizontal_fov>1.15</horizontal_fov>
+        <image>
+          <width>640</width>
+          <height>480</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.03</near>
+          <far>15</far>
+        </clip>
+      </camera>
+    </sensor>
+  </gazebo>
+
+  <!-- ===== ros2_control: diff_drive_controller drives the wheels ===== -->
+  <ros2_control name="GazeboSimSystem" type="system">
+    <hardware>
+      <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+    </hardware>
+    <joint name="left_wheel_joint">
+      <command_interface name="velocity"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="right_wheel_joint">
+      <command_interface name="velocity"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+  </ros2_control>
+
+  <gazebo>
+    <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+      <parameters>/workspace/sim/config/controllers.yaml</parameters>
+      <ros>
+        <!-- ROSA and our tools publish plain Twist on /cmd_vel -->
+        <remapping>/diff_drive_controller/cmd_vel_unstamped:=/cmd_vel</remapping>
+      </ros>
+    </plugin>
+  </gazebo>
+
+</robot>
