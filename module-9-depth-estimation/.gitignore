@@ -1,0 +1,6 @@
+# Models downloaded by depth/download_model.py (hundreds of MB), and local lab results
+depth/hf_cache/
+depth/results/
+depth/calibration.json
+vision/results/
+odometry/results/
