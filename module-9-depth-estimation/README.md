@@ -1,9 +1,12 @@
-# Module 9: Distance from One Camera (Depth Estimation)
+# Module 9: Evaluation Metrics & Hypothesis Testing
 
-This module estimates the distance to an object from a single ESP32-CAM photo with
+## Lab: Distance from One Camera (Depth Estimation)
+
+This lab estimates the distance to an object from a single ESP32-CAM photo with
 [Depth Anything V2](https://github.com/DepthAnything/Depth-Anything-V2) (metric, indoor models,
 run on the CPU inside the ROS 2 container), calibrates the result with a tape measure, and lets a
-ROSA agent drive to a ball and stop at a chosen distance. It builds on Module 8: the same
+ROSA agent drive to a ball and stop at a chosen distance. Students use it for Module 9's
+evaluation and hypothesis-testing activities. It builds on Module 8: the same
 simulation, sensor fusion, camera node, and ROSA movement tools, plus the `depth/` folder.
 
 This folder is the finished reference project (the Module 8 project plus the depth lab). Students
